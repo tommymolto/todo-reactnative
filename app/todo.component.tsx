@@ -1,35 +1,44 @@
 import React from 'react';
 import { View, Text, FlatList } from 'react-native';
 
-const TodoItem = ({ text }) => {
+interface Todo {
+  id: number;
+  text: string;
+}
+
+const TodoItem: React.FC<{ text: string }> = ({ text }) => {
   return (
-    <View>
-      <Text>{text}</Text>
-    </View>
+      <View>
+        <Text>{text}</Text>
+      </View>
   );
 };
 
-const TodoList = ({ todos }) => {
+interface TodoListProps {
+  todos: Todo[];
+}
+
+const TodoList: React.FC<TodoListProps> = ({ todos }) => {
   return (
-    <FlatList
-      data={todos}
-      renderItem={({ item }) => <TodoItem text={item} />}
-      keyExtractor={(item) => item.id}
-    />
+      <FlatList
+          data={todos}
+          renderItem={({ item }) => <TodoItem text={item.text} />}
+          keyExtractor={(item) => item.id.toString()} // Ensure key is a string
+      />
   );
 };
 
-const ToDoComponent = () => {
-  const todos = [
+const ToDoComponent: React.FC = () => {
+  const todos: Todo[] = [
     { id: 1, text: 'Buy groceries' },
     { id: 2, text: 'Finish homework' },
     { id: 3, text: 'Meet with friends' },
   ];
 
   return (
-    <View>
-      <TodoList todos={todos} />
-    </View>
+      <View>
+        <TodoList todos={todos} />
+      </View>
   );
 };
 
