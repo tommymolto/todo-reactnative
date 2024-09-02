@@ -1,45 +1,57 @@
-import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TextInput, Button } from 'react-native';
 
 interface Todo {
-  id: number;
-  text: string;
+    id: number;
+    text: string;
+    done: boolean;
 }
 
-const TodoItem: React.FC<{ text: string }> = ({ text }) => {
-  return (
-      <View>
-        <Text>{text}</Text>
-      </View>
-  );
+const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
+    return (
+        <View>
+            <Text>{todo.text}</Text>
+        </View>
+    );
 };
 
-interface TodoListProps {
-  todos: Todo[];
-}
+const TodoList: React.FC = () => {
+    const [todos, setTodos] = useState<Todo[]>([]);
+    const [newTodoText, setNewTodoText] = useState<string>('');
 
-const TodoList: React.FC<TodoListProps> = ({ todos }) => {
-  return (
-      <FlatList
-          data={todos}
-          renderItem={({ item }) => <TodoItem text={item.text} />}
-          keyExtractor={(item) => item.id.toString()} // Ensure key is a string
-      />
-  );
+    useEffect(() => {
+        // Optional: Fetch initial todos from an API or local storage here
+    }, []);
+
+    const handleAddTodo = (newTodoText: string) => {
+        const newTodo = { id: todos.length + 1, text: newTodoText };
+        setTodos([...todos, newTodo]);
+    };
+
+    return (
+        <View>
+            <TextInput
+                placeholder="Enter new todo"
+                value={newTodoText}
+                onChangeText={setNewTodoText}
+            />
+            <Button
+                title="Add Todo"
+                onPress={() => handleAddTodo(newTodoText)}
+            />
+            <FlatList
+                data={todos}
+                renderItem={({ item }) => <TodoItem todo={item} />}
+                keyExtractor={(item) => item.id.toString()}
+            />
+        </View>
+    );
 };
 
 const ToDoComponent: React.FC = () => {
-  const todos: Todo[] = [
-    { id: 1, text: 'Buy groceries' },
-    { id: 2, text: 'Finish homework' },
-    { id: 3, text: 'Meet with friends' },
-  ];
-
-  return (
-      <View>
-        <TodoList todos={todos} />
-      </View>
-  );
+    return (
+        <TodoList />
+    );
 };
 
 export default ToDoComponent;
