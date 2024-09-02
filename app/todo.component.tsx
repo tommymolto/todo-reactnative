@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, Button } from 'react-native';
+import { View, Text, FlatList, TextInput, Button, StyleSheet } from 'react-native';
+import { CheckBox } from '@rneui/themed';
 
 interface Todo {
     id: number;
@@ -7,10 +8,14 @@ interface Todo {
     done: boolean;
 }
 
-const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
+const TodoItem: React.FC<{ todo: Todo; onToggle: (id: number) => void }> = ({ todo, onToggle }) => {
     return (
-        <View>
-            <Text>{todo.text}</Text>
+        <View style={styles.todoItem}>
+            <CheckBox
+                checked={todo.done} // Use todo.done directly
+                onPress={() => onToggle(todo.id)} // Corrected to use onToggle
+            />
+            <Text style={todo.done ? styles.doneText : styles.text}>{todo.text}</Text>
         </View>
     );
 };
@@ -24,8 +29,14 @@ const TodoList: React.FC = () => {
     }, []);
 
     const handleAddTodo = (newTodoText: string) => {
-        const newTodo = { id: todos.length + 1, text: newTodoText };
+        const newTodo = { id: todos.length + 1, text: newTodoText, done: false };
         setTodos([...todos, newTodo]);
+    };
+
+    const handleToggleTodo = (id: number) => {
+        setTodos(todos.map(todo =>
+            todo.id === id ? { ...todo, done: !todo.done } : todo
+        ));
     };
 
     return (
@@ -41,12 +52,25 @@ const TodoList: React.FC = () => {
             />
             <FlatList
                 data={todos}
-                renderItem={({ item }) => <TodoItem todo={item} />}
+                renderItem={({ item }) => <TodoItem todo={item} onToggle={handleToggleTodo} />}
                 keyExtractor={(item) => item.id.toString()}
             />
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    todoItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    text: {
+        textDecorationLine: 'none',
+    },
+    doneText: {
+        textDecorationLine: 'line-through',
+    },
+});
 
 const ToDoComponent: React.FC = () => {
     return (
