@@ -4,7 +4,7 @@ import { View, Text, FlatList, TextInput, Button } from 'react-native';
 interface Todo {
     id: number;
     text: string;
-    done: boolean;
+    //done: boolean;
 }
 
 const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => {
