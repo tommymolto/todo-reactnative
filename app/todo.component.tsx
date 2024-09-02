@@ -31,6 +31,7 @@ const TodoList: React.FC = () => {
     const handleAddTodo = (newTodoText: string) => {
         const newTodo = { id: todos.length + 1, text: newTodoText, done: false };
         setTodos([...todos, newTodo]);
+        setNewTodoText('');
     };
 
     const handleToggleTodo = (id: number) => {
